@@ -9,23 +9,27 @@ func _ready():
 #    new_game()
 #    $Player.hide()
 
-func _on_Player_hit() -> void:
-    game_over()
-
-func game_over() -> void:
-    $ScoreTimer.stop()
-    $MobTimer.stop()
-    $HUD.show_game_over()
-
 func _on_HUD_start_game():
     new_game()
 
 func new_game() -> void:
+    $Music.play()
     score = 0
     $Player.start($StartPosition.position)
     $StartTimer.start()
     $HUD.update_score(score)
     $HUD.show_message("Get Ready")
+
+func _on_Player_hit() -> void:
+    game_over()
+
+func game_over() -> void:
+    $DeathSound.play()
+    $ScoreTimer.stop()
+    $MobTimer.stop()
+    $HUD.show_game_over()
+    get_tree().call_group("mobs", "queue_free")
+    $Music.stop()
 
 func _on_StartTimer_timeout():
     $MobTimer.start()
